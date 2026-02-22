@@ -40,21 +40,25 @@ jobsCount.innerText = totalAllCards;
 
 
 const tabs = document.querySelectorAll('.tab');
+
 tabs.forEach(tab => {
+
     tab.addEventListener('click', (event) => {
         const selectedButton = event.target;
 
-        emptyJobSection.classList.add('hidden');
-
-
+        
+        // for Selecting different tabs =>
         tabs.forEach(tab => {
             tab.classList.remove('bg-[#3B82F6]', 'text-white');
         });
-
+        
         selectedButton.classList.remove('bg-white', 'text-gray-500');
         selectedButton.classList.add('bg-[#3B82F6]', 'text-white');
-
-
+       
+        
+        
+        // Hide all the tabs before =>
+        emptyJobSection.classList.add('hidden');
         allCardSection.classList.add('hidden');
         interviewCardSection.classList.add('hidden');
         rejectedCardSection.classList.add('hidden');
@@ -71,12 +75,16 @@ tabs.forEach(tab => {
 
 
 
+        // showing the card Section based on tab =>
         const selectedButtonID = selectedButton.id;
 
         if (selectedButtonID == "all-tab-btn") {
             allCardSection.classList.remove('hidden');
-            jobsCount.innerText = totalAllCards;
 
+            //  Calulating Jobs Count on the way to make it more dynamic =>
+            jobsCount.innerText = totalAllCards;
+            
+            // showing the default "no jobs available" section when tab has no jobs in the section =>
             if (jobsCount.innerText == '0') {
                 emptyJobSection.classList.remove('hidden');
             }
@@ -89,7 +97,8 @@ tabs.forEach(tab => {
                 emptyJobSection.classList.remove('hidden');
 
             } else {
-                jobsCount.innerText = `${totalInterviewCards} of ${totalAllCards}`;
+                // for showing _ of _ cards =>
+                jobsCount.innerText = `${totalInterviewCards} of ${totalAllCards}`; 
             }
 
 
@@ -111,13 +120,15 @@ tabs.forEach(tab => {
 
 
 
-const stat = document.querySelectorAll('.stat');
-
-
-
 document.addEventListener('click', (event) => {
     const button = event.target.closest('.toggle-btn');
 
+    // making sure it is intervie or rejected toggle button =>
+    if(!button){
+        return;
+    }
+
+    // getting the card for the button and information =>
     const clickedCard = event.target.closest('.card');
 
     const companyName = clickedCard.querySelector('.company-name').innerText;
@@ -127,15 +138,17 @@ document.addEventListener('click', (event) => {
 
 
 
+    // if the button is interview then =>
+    if (button.innerText == "INTERVIEW") {
 
-    if (event.target.innerText == "INTERVIEW") {
-
+        // get the design of clicked Card status =>
         let currentStatus = clickedCard.querySelector('.stat');
         currentStatus.innerText = "INTERVIEW";
         currentStatus.classList.remove('bg-red-500', 'border-red-400', 'text-white');
         currentStatus.classList.remove('bg-[#EEF4FF]', 'text-[#002C5C]', 'border-black');
         currentStatus.classList.add('bg-green-500', 'border-green-400', 'text-white');
 
+        // setting up the object to show in filtered Section =>
         const object = {
             companyName,
             position,
@@ -144,19 +157,22 @@ document.addEventListener('click', (event) => {
             stat: "INTERVIEW"
         }
 
-
+        // if object alreadys exists in the not adding again =>
         const Existing = interviewList.find(item =>
-            item.companyName == object.companyName && item.position == object.position && item.locationTypeSalary == object.locationTypeSalary && item.description == object.description);
+            item.companyName == object.companyName && item.position == object.position);
 
         if (!Existing) {
             interviewList.push(object);
         }
 
-        rejectedList = rejectedList.filter(item => item.companyName != object.companyName);
+        // filtering it out from  other list =>
+        rejectedList = rejectedList.filter(item => !(item.companyName == object.companyName && item.position == object.position));
 
+        // updating the Original card status =>
+        updateAllTabCard(companyName,position, "INTERVIEW");
 
-
-    } else if (event.target.innerText == "REJECTED") {
+        // if the button is Rejected then =>
+    } else if (button.innerText == "REJECTED") {
 
         let currentStatus = clickedCard.querySelector('.stat');
         currentStatus.innerText = "REJECTED";
@@ -174,40 +190,83 @@ document.addEventListener('click', (event) => {
         }
 
 
+        // does the item exist in the rejected list =>
         const Existing = rejectedList.find(item =>
-            item.companyName == object.companyName && item.position == object.position && item.locationTypeSalary == object.locationTypeSalary && item.description == object.description);
+            item.companyName == object.companyName && item.position == object.position);
 
+            // if it does not then add to it =>
         if (!Existing) {
             rejectedList.push(object);
         }
 
 
-        interviewList = interviewList.filter(item => item.companyName != object.companyName);
+        // filtering it out from other list =>
+        interviewList = interviewList.filter(item => !(item.companyName == object.companyName && item.position == object.position));
 
+        // updating the Original card status =>
+        updateAllTabCard(companyName,position, "REJECTED");
     }
 
+    
+    
+    //Appending to the Section and rendering it =>
     AppendToSection(interviewCardSection, interviewList);
     AppendToSection(rejectedCardSection, rejectedList);
 
 })
 
 
+function updateAllTabCard(companyName, position, newStatus){
+
+        // getting all the original cards =>
+        const Allcards = allCardSection.querySelectorAll('.card');
+
+        // go through all cards and find the orignial card which's interview/rejected toggle button has been clickedd =>
+        Allcards.forEach(card => {
+
+            const cardCompanyName = card.querySelector('.company-name').innerText;
+            const cardPosition = card.querySelector('.position').innerText;
+
+            if(cardCompanyName == companyName && cardPosition == position) {
+                const statofElement = card.querySelector('.stat');
+                statofElement.innerText = newStatus;
+
+                // 
+                statofElement.classList.remove(
+                    'bg-green-500',
+                    'border-green-400',
+                    'bg-red-500',
+                    'border-red-400',
+                    'text-white'
+                )
+
+                // if interview button is clicked then change the card's status to interview style or same for the rejected button =>
+                if (newStatus == "INTERVIEW") {
+                    statofElement.classList.add('bg-green-500','border-green-400','text-white');
+                }else if(newStatus == "REJECTED") {
+                    statofElement.classList.add('bg-red-500','border-red-400','text-white');
+                }
+            }
+        })
+    }
 
 
+    
 function AppendToSection(cardSection, objectlist) {
     cardSection.innerHTML = "";
 
 
     for (let object of objectlist) {
 
+        // making sure that the card we append to interview/rejected section has proper status styling =>
         let statClass = "";
-
         if (object.stat === "INTERVIEW") {
             statClass = "bg-green-500 border-green-400 text-white"
         } else if (object.stat === "REJECTED") {
             statClass = 'bg-red-500 border-red-400 text-white';
         }
 
+        // creating Element to append to the interview/rejected section =>
         const newDiv = document.createElement('div');
 
         newDiv.className = "card p-6 border border-gray-300 bg-white space-y-5 shadow-lg";
@@ -244,6 +303,8 @@ function AppendToSection(cardSection, objectlist) {
         cardSection.appendChild(newDiv);
     }
 
+
+    // calculating count =>
     const totalAllCards = allCardSection.children.length;
     const totalInterviewCards = interviewCardSection.children.length;
     const totalRejectedCards = rejectedCardSection.children.length;
@@ -276,31 +337,9 @@ function AppendToSection(cardSection, objectlist) {
         }
     }
 
+    // making sure after changes of count if count is zero then default "no job section" is shown
     if (jobsCount.innerText == '0') {
         emptyJobSection.classList.remove('hidden');
     }
 }
 
-
-
-// Delete Card => 
-
-let newList = [];
-const Allcards = document.querySelectorAll('.card')
-const deletebuttons = document.querySelectorAll('.btn-ghost')
-
-deletebuttons.forEach(button => {
-    button.addEventListener('click', (e) => {
-        const cardToDelete = e.target.closest('.card');
-        const cardContainer = cardToDelete.parentNode;
-        const cards = cardContainer.children
-
-        for (let card of cards) {
-            console.log(card);
-        }
-
-
-
-
-    })
-});
