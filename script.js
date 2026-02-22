@@ -69,7 +69,7 @@ tabs.forEach(tab => {
         interviewCount.innerText = totalInterviewCards;
         rejectedCount.innerText = totalRejectedCards;
 
-        
+
 
         const selectedButtonID = selectedButton.id;
 
@@ -243,6 +243,7 @@ function AppendToSection(cardSection, objectlist) {
 
         cardSection.appendChild(newDiv);
     }
+
     const totalAllCards = allCardSection.children.length;
     const totalInterviewCards = interviewCardSection.children.length;
     const totalRejectedCards = rejectedCardSection.children.length;
@@ -253,26 +254,53 @@ function AppendToSection(cardSection, objectlist) {
 
     if (!allCardSection.classList.contains('hidden')) {
         jobsCount.innerText = totalAllCards;
+
     }
 
     else if (!interviewCardSection.classList.contains('hidden')) {
-        
-        if(totalInterviewCards == 0){
+
+        if (totalInterviewCards == 0) {
             jobsCount.innerText = '0'
-        }else{
+        } else {
             jobsCount.innerText = `${totalInterviewCards} of ${totalAllCards}`
         }
     }
 
     else if (!rejectedCardSection.classList.contains('hidden')) {
-        
-        if(totalRejectedCards == 0){
+
+        if (totalRejectedCards == 0) {
             jobsCount.innerText = '0'
 
-        }else{
+        } else {
             jobsCount.innerText = `${totalRejectedCards} of ${totalAllCards}`
         }
+    }
+
+    if (jobsCount.innerText == '0') {
+        emptyJobSection.classList.remove('hidden');
     }
 }
 
 
+
+// Delete Card => 
+
+let newList = [];
+const Allcards = document.querySelectorAll('.card')
+const deletebuttons = document.querySelectorAll('.btn-ghost')
+
+deletebuttons.forEach(button => {
+    button.addEventListener('click', (e) => {
+        const cardToDelete = e.target.closest('.card');
+        const cardContainer = cardToDelete.parentNode;
+        const cards = cardContainer.children
+
+        for (let card of cards) {
+            console.log(card);
+        }
+
+
+
+
+    })
+});
