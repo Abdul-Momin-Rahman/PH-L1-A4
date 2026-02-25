@@ -126,13 +126,6 @@ document.addEventListener('click', (event) => {
     // if the button is interview then =>
     if (button.innerText == "INTERVIEW") {
 
-        // get the design of clicked Card status =>
-        let currentStatus = clickedCard.querySelector('.stat');
-        currentStatus.innerText = "INTERVIEW";
-        currentStatus.classList.remove('bg-red-500', 'border-red-400', 'text-white');
-        currentStatus.classList.remove('bg-[#EEF4FF]', 'text-[#002C5C]', 'border-black');
-        currentStatus.classList.add('bg-green-500', 'border-green-400', 'text-white');
-
         // setting up the object to show in filtered Section =>
         const object = {
             companyName,
@@ -157,15 +150,10 @@ document.addEventListener('click', (event) => {
         // updating the Original card status =>
         updateAllTabCard(companyName, position, "INTERVIEW");
 
+
+
         // if the button is Rejected then =>
     } else if (button.innerText == "REJECTED") {
-
-        // get the design of clicked Card status =>
-        let currentStatus = clickedCard.querySelector('.stat');
-        currentStatus.innerText = "REJECTED";
-        currentStatus.classList.remove('bg-green-500', 'border-green-400', 'text-white');
-        currentStatus.classList.remove('bg-[#EEF4FF]', 'text-[#002C5C]', 'border-black');
-        currentStatus.classList.add('bg-red-500', 'border-red-400', 'text-white');
 
         // setting up the object to show in filtered Section =>
         const object = {
